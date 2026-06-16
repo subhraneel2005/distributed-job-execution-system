@@ -1,0 +1,249 @@
+{
+  "info": {
+    "name": "Distributed Job Execution System",
+    "description": "API collection for the Distributed Job Execution Platform\n\n## Flow\n1. Register a worker (POST /api/workers/register)\n2. Create jobs (POST /api/jobs)\n3. The scheduler automatically assigns jobs to workers\n4. Workers pick up assigned jobs and execute them\n5. Monitor job status (GET /api/jobs)\n\n## Environment Variables\n- `base_url`: Server URL (default: http://localhost:3000)\n- `job_id`: ID of a created job (set from response)\n- `worker_id`: ID of a registered worker (set from response)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Jobs",
+      "item": [
+        {
+          "name": "Create Job (HIGH priority)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('job_id', jsonData.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"taskName\": \"data-processing\",\n  \"priority\": \"HIGH\",\n  \"maxRetries\": 3,\n  \"payload\": {\n    \"inputFile\": \"data.csv\",\n    \"transform\": \"aggregate\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/jobs",
+              "host": ["{{base_url}}"],
+              "path": ["api", "jobs"]
+            }
+          }
+        },
+        {
+          "name": "Create Job (MEDIUM priority)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('job_id', jsonData.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"taskName\": \"report-generation\",\n  \"priority\": \"MEDIUM\",\n  \"maxRetries\": 2,\n  \"payload\": {\n    \"reportType\": \"monthly\",\n    \"format\": \"pdf\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/jobs",
+              "host": ["{{base_url}}"],
+              "path": ["api", "jobs"]
+            }
+          }
+        },
+        {
+          "name": "Create Job (LOW priority)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('job_id', jsonData.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"taskName\": \"cleanup-logs\",\n  \"priority\": \"LOW\",\n  \"maxRetries\": 1,\n  \"payload\": {\n    \"retentionDays\": 30,\n    \"dryRun\": true\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/jobs",
+              "host": ["{{base_url}}"],
+              "path": ["api", "jobs"]
+            }
+          }
+        },
+        {
+          "name": "Get All Jobs",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/jobs",
+              "host": ["{{base_url}}"],
+              "path": ["api", "jobs"]
+            }
+          }
+        },
+        {
+          "name": "Get Jobs by Status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/jobs?status=QUEUED",
+              "host": ["{{base_url}}"],
+              "path": ["api", "jobs"],
+              "query": [
+                { "key": "status", "value": "QUEUED" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Job by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/jobs/{{job_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "jobs", "{{job_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Job History",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/jobs/history/{{job_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "jobs", "history", "{{job_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Workers",
+      "item": [
+        {
+          "name": "Register Worker",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('worker_id', jsonData.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"maxCapacity\": 3,\n  \"metadata\": {\n    \"host\": \"worker-node-1\",\n    \"region\": \"us-east-1\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/workers/register",
+              "host": ["{{base_url}}"],
+              "path": ["api", "workers", "register"]
+            }
+          }
+        },
+        {
+          "name": "Send Heartbeat",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/api/workers/{{worker_id}}/heartbeat",
+              "host": ["{{base_url}}"],
+              "path": ["api", "workers", "{{worker_id}}", "heartbeat"]
+            }
+          }
+        },
+        {
+          "name": "Get All Workers",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/workers",
+              "host": ["{{base_url}}"],
+              "path": ["api", "workers"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "job_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "worker_id",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
