@@ -1,4 +1,5 @@
 # Distributed Job Execution Platform
+https://github.com/user-attachments/assets/3ded9270-556b-44ae-9e6c-6bb9a001fcf6
 
 A fault-tolerant distributed job execution system with PostgreSQL persistence, priority-based scheduling, heartbeat health monitoring, retry handling, and a dead letter queue.
 
