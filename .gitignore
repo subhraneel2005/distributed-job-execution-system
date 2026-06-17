@@ -1,5 +1,5 @@
-.env
-package-lock.json
-dist
-node_modules
-drizzle
+server/.env
+server/package-lock.json
+server/dist
+server/node_modules
+server/drizzle
