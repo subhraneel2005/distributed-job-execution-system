@@ -16,9 +16,9 @@ async function main(): Promise<void> {
   startScheduler(3000);
   startHeartbeatMonitor(3000);
 
+  // spawn more when need more workers
   await spawnWorker(3);
   await spawnWorker(3);
-  await spawnWorker(2);
 
   await db.execute(sql`SELECT 1`)
   logger.info("Database is UP")
