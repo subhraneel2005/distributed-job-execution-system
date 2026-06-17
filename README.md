@@ -99,6 +99,40 @@ npm start
 
 A Postman collection is available at `postman_collection.json`.
 
+## Frontend (Next.js)
+
+The `client/` directory contains a Next.js dashboard that consumes the REST API.
+
+### Setup
+
+```bash
+cd client
+npm install
+```
+
+### Environment
+
+Create `client/.env.local`:
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000
+```
+
+### Run
+
+```bash
+npm run dev    # starts on port 3000
+```
+
+### Pages
+
+| Path | Description |
+|------|-------------|
+| `/` | Dashboard — job/worker status counts, server health, recent jobs |
+| `/jobs` | Job list with status filter and create-job dialog |
+| `/jobs/[id]` | Job detail with full execution history |
+| `/workers` | Worker list with heartbeat controls and register-worker dialog |
+
 ## Architecture Overview
 
 ```
